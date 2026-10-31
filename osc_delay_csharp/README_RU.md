@@ -19,17 +19,33 @@
 
 ## Сборка из исходников (нужен только штатный компилятор)
 
-`build.bat` собирает `OSC_Delay.exe` и `test_proxy.exe` через `csc.exe` из
-`C:\Windows\Microsoft.NET\Framework64\v4.0.30319\` (уже есть в Windows). После сборки
-автоматически прогоняется тест. Файлы:
+`build.bat` собирает `OSC_Delay.exe` и тесты, затем сам прогоняет тесты (13 строк `PASS:`).
+Нужен только компилятор `csc.exe` из .NET Framework 4. Он **уже есть в каждой Windows 10/11**:
+обычно `C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe`.
+
+`build.bat` находит компилятор сам, по порядку:
+1. переменная окружения `CSC_PATH` (полный путь к `csc.exe`) — ручной override, самый приоритетный;
+2. файл `csc_path.txt` рядом с `build.bat` (одна строка = полный путь) — ручной override;
+3. реестр `HKLM\SOFTWARE\Microsoft\.NETFramework` → `InstallRoot` (работает, если .NET на другом диске);
+4. стандартные папки `%SystemRoot%\Microsoft.NET\Framework64` и `\Framework`, версия `v4.0.30319`;
+5. поиск самых новых папок `v*` в этих папках.
+
+Если компилятор в необычном месте и автопоиск его не нашёл: создайте `csc_path.txt` рядом
+с `build.bat`, одной строкой полный путь (например
+`C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe`), и запустите `build.bat`.
+`build.bat` печатает `Using compiler: <путь>` — видно, какой компилятор выбран.
+
+Файлы:
 
 | Файл | Роль |
 |---|---|
 | `delay_proxy.cs` | ядро прокси (порт DelayProxy) |
 | `Program.cs` | окно WinForms + настройки + `Main` |
-| `test.cs` | тест, эквивалент `test_proxy.py` |
+| `test.cs` | тест ядра (7 проверок) |
+| `ui_test.cs` | тест окна и трея (6 проверок) |
+| `app.ico` | иконка, вшивается в exe |
 | `build.bat` | сборка + тест |
-| `Zapustit.bat` | лаунчер |
+| `test_single.ps1` | тест одного экземпляра |
 
 ## Подключение
 
