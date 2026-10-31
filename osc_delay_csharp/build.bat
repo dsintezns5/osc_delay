@@ -7,7 +7,7 @@ if not exist "%CSC%" (
     pause
     exit /b 1
 )
-"%CSC%" /nologo /target:winexe /optimize+ /win32icon:app.ico /out:OSC_Delay.exe delay_proxy.cs Program.cs
+"%CSC%" /nologo /target:winexe /optimize+ /codepage:65001 /win32icon:app.ico /out:OSC_Delay.exe delay_proxy.cs Program.cs
 if errorlevel 1 (
     echo ERROR BUILD
     pause
